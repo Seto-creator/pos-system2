@@ -726,9 +726,215 @@
     <script>
         // 初期の2階層メニュー構造
         let masterMenu = [
-            { category: "ビール", items: [{ name: "生ビール", price: 680 }, { name: "クラフトビール", price: 680 }, { name: "水曜日の猫", price: 680 }, { name: "ハイネケン", price: 700 }] },
-            { category: "サワー・ウイスキー", items: [{ name: "レモンサワー", price: 600 }, { name: "ハイボール", price: 600 }] },
-            { category: "その他", items: [{ name: "ソフドリ", price: 400 }, { name: "フード", price: 500 }] }
+            {
+                category: "ビール・発泡酒",
+                items: [
+                    { name: "生ビール", price: 680 },
+                    { name: "クラフト各種", price: 680 },
+                    { name: "コロナ", price: 680 },
+                    { name: "ハイネケン", price: 780 },
+                    { name: "シャンディーガフ", price: 680 },
+                    { name: "レッドアイ", price: 680 },
+                    { name: "ディーゼル", price: 680 },
+                    { name: "ドッグノーズ（ジン）", price: 680 },
+                    { name: "グリーンフリー（ノンアル）", price: 680 }
+                ]
+            },
+            {
+                category: "ウイスキー",
+                items: [
+                    { name: "ハイボール", price: 850 },
+                    { name: "ウイスキー 850", price: 850 },
+                    { name: "ウイスキー 1050", price: 1050 },
+                    { name: "ジンジャーハイ", price: 680 },
+                    { name: "コークハイ", price: 700 },
+                    { name: "ウイスキー その他", price: 850 }
+                ]
+            },
+            {
+                category: "サワー",
+                items: [
+                    { name: "レモンサワー", price: 650 },
+                    { name: "カフェ酎", price: 680 },
+                    { name: "緑茶ハイ", price: 630 },
+                    { name: "ウーロンハイ", price: 630 },
+                    { name: "ジャスミンハイ", price: 630 },
+                    { name: "紅茶ハイ", price: 630 },
+                    { name: "オレンジハイ", price: 650 },
+                    { name: "グレフルハイ", price: 650 },
+                    { name: "梅昆布茶割り", price: 680 },
+                    { name: "JJ（ジャス）", price: 730 },
+                    { name: "JR（緑茶）", price: 730 },
+                    { name: "黒烏龍茶割り", price: 780 },
+                    { name: "コーラ割り", price: 650 },
+                    { name: "ジンジャー割り", price: 650 }
+                ]
+            },
+            {
+                category: "ショット・その他",
+                items: [
+                    { name: "テキーラ", price: 500 },
+                    { name: "クライナー", price: 600 },
+                    { name: "Rテキーラ", price: 400 }
+                ]
+            },
+            {
+                category: "麦焼酎",
+                items: [
+                    { name: "白水（麦）ロック", price: 630 },
+                    { name: "白水（麦）茶割り", price: 630 },
+                    { name: "白水（麦）ソーダ", price: 730 }
+                ]
+            },
+            {
+                category: "芋焼酎",
+                items: [
+                    { name: "黒霧島（芋）ロック", price: 630 },
+                    { name: "黒霧島（芋）茶割り", price: 630 },
+                    { name: "黒霧島（芋）ソーダ", price: 730 },
+                    { name: "白霧島（芋）ロック", price: 630 },
+                    { name: "白霧島（芋）茶割り", price: 630 },
+                    { name: "黒霧島（芋）ソーダ", price: 730 },
+
+                    { name: "黒霧島EX（芋）ロック", price: 730 },
+                    { name: "黒霧島EX（芋）茶割り", price: 730 },
+                    { name: "黒霧島EX（芋）ソーダ", price: 830 },
+
+                    { name: "あかね霧島（芋）ロック", price: 730 },
+                    { name: "あかね霧島（芋）茶割り", price: 730 },
+                    { name: "あかね霧島（芋）ソーダ", price: 830 },
+
+                ]
+            },
+            {
+                category: "米焼酎",
+                items: [
+                    { name: "白水（米）ロック", price: 630 },
+                    { name: "白水（米）茶割り", price: 630 },
+                    { name: "白水（米）ソーダ", price: 730 },
+                    { name: "鳥飼（米）ロック", price: 830 },
+                    { name: "鳥飼（米）茶割り", price: 830 },
+                    { name: "鳥飼（米）ソーダ", price: 930 }
+                ]
+            },
+            {
+                category: "梅酒",
+                items: [
+                    { name: "ロック", price: 780 },
+                    { name: "ソーダ", price: 780 },
+                    { name: "黒糖梅酒ロック", price: 780 },
+                    { name: "黒糖梅酒ソーダ", price: 780 }
+                ]
+            },
+            {
+                category: "ジン",
+                items: [
+                    { name: "翠ジンソーダ", price: 780 },
+                    { name: "ジントニック", price: 780 },
+                    { name: "ジンバック", price: 780 },
+                    { name: "ジンリッキー", price: 780 },
+                    { name: "オレンジブロッサム", price: 780 }
+                ]
+            },
+            {
+                category: "ウォッカ",
+                items: [
+                    { name: "モスコミュール", price: 780 },
+                    { name: "ウォッカトニック", price: 780 },
+                    { name: "スクリュードライバー", price: 780 },
+                    { name: "レッドブルウォッカ", price: 930 }
+
+                ]
+            },
+            {
+                category: "マリブ",
+                items: [
+                    { name: "マリブコーク", price: 780 },
+                    { name: "マリブオレンジ", price: 780 },
+                    { name: "マリブミルク", price: 780 }
+                ]
+            },
+            {
+                category: "ピーチ",
+                items: [
+                    { name: "レゲエパンチ（烏龍）", price: 780 },
+                    { name: "ファジーネーブル（オレンジ）", price: 780 },
+                    { name: "スクリュードライバー", price: 780 },
+                    { name: "ピーチツリーフィズ", price: 780 },
+
+                ]
+            },
+            {
+                category: "カシス",
+                items: [
+                    { name: "カシス烏龍", price: 780 },
+                    { name: "カシスオレンジ", price: 780 },
+                    { name: "カシスソーダ", price: 780 }
+                ]
+            },
+            {
+                category: "ラム",
+                items: [
+                    { name: "ラムトニック", price: 780 },
+                    { name: "ラムバック", price: 780 },
+                    { name: "ラムコーク", price: 780 }
+                ]
+            },
+            {
+                category: "カルーア",
+                items: [
+                    { name: "カルーアミルク", price: 780 },
+                    { name: "カルーアコーヒー", price: 780 }
+                ]
+            },
+            {
+                category: "テキーラカクテル",
+                items: [
+                    { name: "テキーラサンライズ", price: 780 },
+                    { name: "メキシコーク", price: 780 },
+                    { name: "テコニック（トニック）", price: 780 },
+                    { name: "メキシカンバナナ", price: 780 },
+
+                ]
+            },
+            {
+                category: "リキュールその他",
+                items: [
+                    { name: "チャイナブルー", price: 780 },
+                    { name: "ディタモーニ", price: 780 },
+                    { name: "ライチソーダ", price: 780 },
+                    { name: "ライチトニック", price: 780 },
+                    { name: "あんず酒", price: 780 },
+                    { name: "ストロベリーミルク", price: 780 },
+                    { name: "ストロベリーソーダ", price: 780 },
+                    { name: "ストロベリーミルク", price: 780 },
+                    { name: "ストロベリーソーダ", price: 780 },
+                    { name: "CAMPARI （ソーダ）", price: 780 },
+                    { name: "CAMPARI （オレンジ）", price: 780 },
+                    { name: "CAMPARI スプモーニ（グレフル、トニック）", price: 780 },
+                    { name: "オリジナルカクテル", price: 880 }
+                ]
+            },
+            {
+                category: "ソフトドリンク",
+                items: [
+                    { name: "コーラ", price: 530 },
+                    { name: "『辛』ジンジャーエール", price: 530 },
+                    { name: "『甘』ジンジャーエール", price: 530 },
+                    { name: "コーヒー", price: 530 },
+                    { name: "カフェオレ", price: 580 },
+                    { name: "ウーロン茶", price: 530 },
+                    { name: "緑茶", price: 530 },
+                    { name: "ジャスミン茶", price: 530 },
+                    { name: "紅茶", price: 530 },
+                    { name: "ミルクティ", price: 580 },
+                    { name: "オレンジジュース", price: 550 },
+                    { name: "グレープフルーツジュース", price: 550 },
+                    { name: "梅昆布茶", price: 580 },
+                    { name: "レッドブル", price: 650 }
+                ]
+            }
+
         ];
 
         let currentCategoryIndex = null;
@@ -1327,7 +1533,6 @@
     </script>
 </body>
 <footer>
-    <p>system developer</p>
-    <font size="2">＊seto</font>
+    <font size="1">＊seto</font>
 </footer>
 </html>
