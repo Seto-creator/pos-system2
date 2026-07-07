@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ダーツバー高機能レジシステム</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #121214;
+            color: #e5e5ea;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin: 5px 0 15px 0;
+            color: #ffd60a;
+        }
+
+        /* 共通スタイル */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 15px 0 8px 0;
+            color: #8e8e93;
+        }
+
+        .action-link {
+            background: #30d158;
+            color: black;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-link:active {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .action-link:disabled {
+            background: #48484a;
+            color: #8e8e93;
+            transform: none;
+        }
+
+        /* 席選択 */
+        .table-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .table-btn {
+            background: #1c1c1e;
+            border: 1px solid #3a3a3c;
+            padding: 10px 2px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #aeaeb2;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .table-btn:active {
+            background: #2c2c2e;
+        }
+
+        .table-btn.active {
+            background: #30d158;
+            color: #000;
+            border-color: #30d158;
+        }
+
+        .table-btn.active:active {
+            background: #24b34b;
+        }
+
+        .table-btn.has-items {
+            border-left: 4px solid #ff453a;
+        }
+
+        .time-badge {
+            display: block;
+            font-size: 9px;
+            color: #8e8e93;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        .table-btn.active .time-badge {
+            color: #000;
+            opacity: 0.8;
+        }
+
+        /* コントロールパネル (人数・客層・ダーツ) */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .panel-box {
+            background: #1c1c1e;
+            border: 1px solid #3a3a3c;
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panel-box span {
+            font-size: 11px;
+            color: #8e8e93;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .num-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .num-btn {
+            background: #3a3a3c;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .num-btn:active {
+            background: #48484a;
+        }
+
+        .num-val {
+            font-size: 16px;
+            font-weight: bold;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        /* 客層スイッチ */
+        .customer-type-zone {
+            display: flex;
+            gap: 4px;
+            width: 100%;
+            margin-top: 6px;
+            border-top: 1px dashed #2c2c2e;
+            padding-top: 6px;
+        }
+
+        .type-btn {
+            flex: 1;
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            color: #8e8e93;
+            padding: 4px 0;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .type-btn.active {
+            background: #007aff;
+            color: white;
+            border-color: #007aff;
+        }
+
+        .type-btn.active:active {
+            background: #0056b3;
+        }
+
+        .btn-darts-toggle {
+            background: #bf5af2;
+            color: white;
+            border: none;
+            width: 100%;
+            height: 100%;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .btn-darts-toggle:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .btn-darts-toggle.running {
+            background: #ff9500;
+            color: black;
+        }
+
+        /* 2階層メニューシステム */
+        .menu-outer-container {
+            background: #1c1c1e;
+            border: 1px solid #2c2c2e;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .cat-btn {
+            background: #2c2c2e;
+            border: 1px solid #3a3a3c;
+            padding: 12px 4px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffd60a;
+            text-align: center;
+        }
+
+        .cat-btn:active {
+            background: #3a3a3c;
+            transform: scale(0.97);
+        }
+
+        .sub-menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffd60a;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #3a3a3c;
+        }
+
+        .back-btn {
+            background: #48484a;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .back-btn:active {
+            background: #555557;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .item-btn {
+            background: #3a3a3c;
+            border: none;
+            padding: 14px 6px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            text-align: left;
+            position: relative;
+        }
+
+        .item-btn:active {
+            background: #48484a;
+            transform: scale(0.97);
+        }
+
+        .item-btn span {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-right: 45px;
+        }
+
+        .item-btn price {
+            position: absolute;
+            right: 6px;
+            bottom: 14px;
+            font-size: 11px;
+            color: #aeaeb2;
+            font-weight: normal;
+        }
+
+        /* 伝票エリア */
+        .slip-container {
+            background: #1c1c1e;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #2c2c2e;
+            margin-bottom: 12px;
+        }
+
+        .slip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #30d158;
+            border-bottom: 1px solid #3a3a3c;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+        }
+
+        .rename-btn {
+            background: #3a3a3c;
+            color: #e5e5ea;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 6px;
+        }
+
+        .rename-btn:active {
+            background: #48484a;
+        }
+
+        .slip-meta {
+            text-align: right;
+            font-size: 11px;
+            color: #ff9500;
+            line-height: 1.3;
+        }
+
+        .slip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #2c2c2e;
+        }
+
+        .qty-adjuster {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .qty-adj-btn {
+            background: #2c2c2e;
+            border: 1px solid #48484a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-adj-btn:active {
+            background: #3a3a3c;
+        }
+
+        .qty-adj-btn.minus {
+            color: #ff453a;
+        }
+
+        .qty-adj-btn.plus {
+            color: #30d158;
+        }
+
+        .qty-text {
+            font-size: 13px;
+            font-weight: bold;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .calc-zone {
+            border-top: 1px dashed #3a3a3c;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #aeaeb2;
+        }
+
+        /* メインアクション */
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #2c2c2e;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
+
+        .btn-clear {
+            background: #3a3a3c;
+            color: #ff453a;
+            font-size: 13px;
+        }
+
+        .btn-pay {
+            background: #30d158;
+            color: black;
+            font-size: 16px;
+        }
+
+        /* モーダル（支払い方法選択） */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1c1c1e;
+            border: 1px solid #3a3a3c;
+            border-radius: 14px;
+            padding: 20px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffd60a;
+        }
+
+        .pay-methods-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .method-btn {
+            background: #2c2c2e;
+            border: 1px solid #48484a;
+            color: white;
+            padding: 16px 0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .method-btn:active {
+            background: #007aff;
+            color: white;
+            border-color: #007aff;
+        }
+
+        .modal-cancel {
+            background: #3a3a3c;
+            color: #aeaeb2;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* 日計・売上履歴エリア */
+        .report-section {
+            background: #1c1c1e;
+            border: 1px solid #3a3a3c;
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 25px;
+        }
+
+        .report-toggle-btn {
+            background: #ff9500;
+            color: black;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .report-toggle-btn:active {
+            opacity: 0.8;
+        }
+
+        .report-content {
+            display: none;
+            margin-top: 12px;
+            border-top: 1px solid #3a3a3c;
+            padding-top: 12px;
+        }
+
+        .summary-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .sum-box {
+            background: #2c2c2e;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 11px;
+            color: #aeaeb2;
+        }
+
+        .sum-box val {
+            display: block;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            margin-top: 2px;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 11px;
+            text-align: left;
+            background: #121214;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #2c2c2e;
+            color: #aeaeb2;
+        }
+
+        .history-row span.time {
+            color: #8e8e93;
+        }
+
+        .history-row span.amt {
+            font-weight: bold;
+            color: #e5e5ea;
+        }
+
+        /* メメニュー編集管理モーダル */
+        .edit-panel {
+            background: #1c1c1e;
+            border: 1px solid #007aff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- このページは瀬戸が作成 2026/7/7 七夕だねぇ -->
+    <h1>🎯 花鳥風月 POS</h1>
+
+    <!-- 席選択 -->
+    <div class="section-header">
+        <span>席を選択</span>
+        <button class="action-link" id="add-table-trigger" onclick="addNewTable()">＋ 席を追加</button>
+    </div>
+    <div class="table-selector" id="table-zone"></div>
+
+    <!-- コントロールパネル -->
+    <div class="control-panel">
+        <div class="panel-box">
+            <span>👥 席の人数・客層</span>
+            <div class="num-control">
+                <button class="num-btn" onclick="adjustCustomers(-1)">−</button>
+                <div class="num-val" id="ctrl-customers">1</div>
+                <button class="num-btn" onclick="adjustCustomers(1)">+</button>
+            </div>
+            <div class="customer-type-zone">
+                <button class="type-btn" id="type-new" onclick="setCustomerType('新規')">新規</button>
+                <button class="type-btn" id="type-repeat" onclick="setCustomerType('リピーター')">リピ</button>
+            </div>
+        </div>
+        <div class="panel-box" style="padding: 0;">
+            <button class="btn-darts-toggle" id="darts-toggle-btn" onclick="toggleDarts()">🎯 ダーツ開始</button>
+        </div>
+    </div>
+
+    <!-- 2階層メニューエリア -->
+    <div class="section-header">
+        <span>注文メニュー</span>
+        <button class="action-link" style="background:#007aff; color:white;" id="edit-mode-toggle-btn" onclick="toggleEditModePanel()">🛠️ メニュー個別編集</button>
+    </div>
+
+    <!-- メニュー編集コントロール（非表示がデフォルト） -->
+    <div class="edit-panel" id="menu-edit-panel">
+        <div style="font-size:12px; font-weight:bold; color:#007aff; margin-bottom:8px;">【簡易メニュー編集モード】</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:8px;">
+            <button class="action-link" style="background:#ffd60a; color:black;" onclick="editCategoryFlow()">📁 カテゴリの管理</button>
+            <button class="action-link" style="background:#30d158; color:black;" onclick="editItemFlow()">🍹 メニュー商品の追加/変更</button>
+        </div>
+        <div style="font-size:10px; color:#8e8e93; text-align:center;">※編集が終わったら再度上の「メニュー個別編集」を押すと閉じます</div>
+    </div>
+
+    <div class="menu-outer-container" id="menu-outer-zone">
+        <!-- ここにカテゴリ一覧、または子メニューが動的表示される -->
+    </div>
+
+    <!-- 伝票詳細 -->
+    <div class="slip-container">
+        <div class="slip-header">
+            <div>
+                <span id="current-table-title">席</span>
+                <button class="rename-btn" onclick="renameCurrentTable()">名前変更</button>
+            </div>
+            <div class="slip-meta">
+                <div id="current-entry-time">入店: --:--</div>
+                <div id="current-darts-time" style="color: #bf5af2;">ダーツ: 未開始</div>
+            </div>
+        </div>
+
+        <!-- 注文アイテム -->
+        <div id="slip-items"></div>
+        <div id="system-rows-zone"></div>
+
+        <!-- 計算結果 -->
+        <div class="calc-zone">
+            <div class="calc-row"><span>税抜小計:</span><span id="subtotal">0円</span></div>
+            <div class="calc-row" style="color: #ffd60a; font-weight: bold;"><span>お会計 (一の位繰上税込):</span><span id="total" style="font-size: 17px;">0円</span></div>
+        </div>
+    </div>
+
+    <!-- 会計アクション -->
+    <div class="action-btns">
+        <button class="btn btn-clear" onclick="clearCurrentTable()">クリア</button>
+        <button class="btn btn-pay" onclick="openPaymentModal()">🛒 会計する</button>
+    </div>
+
+    <!-- 支払い方法選択モーダル -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-title">支払い方法を選択</div>
+            <div style="font-size: 18px; font-weight: bold; color: #ff453a; margin-bottom: 15px;" id="modal-pay-amount">0円</div>
+            <div class="pay-methods-grid">
+                <button class="method-btn" onclick="executePayment('現金')">💴 現金</button>
+                <button class="method-btn" onclick="executePayment('クレジット')">💳 クレジット</button>
+                <button class="method-btn" onclick="executePayment('PayPay')">📱 PayPay</button>
+                <button class="method-btn" onclick="executePayment('メダル')">🪙 メダル</button>
+            </div>
+            <button class="modal-cancel" onclick="closePaymentModal()">戻る</button>
+        </div>
+    </div>
+
+    <!-- 日計セクション -->
+    <div class="report-section">
+        <button class="report-toggle-btn" onclick="toggleReportView()">📊 本日の日計（売上集計）を表示</button>
+        <div class="report-content" id="report-content-area">
+            <div class="summary-card">
+                <div class="sum-box">現金 売上<val id="sum-cash">0円</val>
+                </div>
+                <div class="sum-box">クレジット 売上<val id="sum-card">0円</val>
+                </div>
+                <div class="sum-box">PayPay 売上<val id="sum-paypay">0円</val>
+                </div>
+                <div class="sum-box">メダル 会計<val id="sum-medal">0円</val>
+                </div>
+            </div>
+            <div style="font-size: 12px; font-weight: bold; margin-bottom: 6px; color: #ffd60a;">会計済み明細一覧</div>
+            <div class="history-list" id="payment-history-log">
+                <div style="color:#636366; text-align:center; padding:10px;">本日の会計履歴はまだありません</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初期の2階層メニュー構造
+        let masterMenu = [
+            { category: "ビール", items: [{ name: "生ビール", price: 680 }, { name: "クラフトビール", price: 680 }, { name: "水曜日の猫", price: 680 }, { name: "ハイネケン", price: 700 }] },
+            { category: "サワー・ウイスキー", items: [{ name: "レモンサワー", price: 600 }, { name: "ハイボール", price: 600 }] },
+            { category: "その他", items: [{ name: "ソフドリ", price: 400 }, { name: "フード", price: 500 }] }
+        ];
+
+        let currentCategoryIndex = null;
+
+        let tables = ['T1', 'T2', 'T3', 'T4', 'C1', 'C2', 'C3', 'C4'];
+        let tableNames = {
+            T1: 'テーブル1', T2: 'テーブル2', T3: 'テーブル3', T4: 'テーブル4',
+            C1: 'カウンター1', C2: 'カウンター2', C3: 'カウンター3', C4: 'カウンター4'
+        };
+
+        let tableData = {};
+        function initTableData(id) {
+            tableData[id] = { cart: {}, entryTime: null, dartsStartTime: null, dartsFixedPrice: 0, customers: 1, type: '新規', memo: '' };
+        }
+        tables.forEach(id => initTableData(id));
+
+        let currentTable = 'T1';
+        let salesHistory = [];
+
+        let currentProcessingAmount = 0;
+        let currentUsedMedalsInThisSession = 0;
+
+        // メニュー画面の表示
+        function renderMenuSystem() {
+            const container = document.getElementById('menu-outer-zone');
+            container.innerHTML = '';
+
+            if (currentCategoryIndex === null) {
+                let html = `<div class="category-grid">`;
+                masterMenu.forEach((cat, idx) => {
+                    html += `<div class="cat-btn" onclick="drillDownCategory(${idx})">${cat.category} ＞</div>`;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            } else {
+                const cat = masterMenu[currentCategoryIndex];
+                let html = `
+                    <div class="sub-menu-header">
+                        <span>📂 ${cat.category}</span>
+                        <button class="back-btn" onclick="backToCategoryTop()">🔌 戻る</button>
+                    </div>
+                    <div class="item-grid">
+                `;
+                cat.items.forEach(item => {
+                    html += `
+                        <button class="item-btn" onclick="addItem('${item.name}', ${item.price})">
+                            <span>${item.name}</span>
+                            <price>¥${item.price}</price>
+                        </button>
+                    `;
+                });
+                if (cat.items.length === 0) {
+                    html += `<div style="color:#636366; font-size:12px; grid-column:span 2; text-align:center; padding:10px;">商品が登録されていません</div>`;
+                }
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+        }
+
+        function drillDownCategory(idx) {
+            currentCategoryIndex = idx;
+            renderMenuSystem();
+        }
+
+        function backToCategoryTop() {
+            currentCategoryIndex = null;
+            renderMenuSystem();
+        }
+
+        function renderTableSelector() {
+            const zone = document.getElementById('table-zone');
+            zone.innerHTML = '';
+            tables.forEach(id => {
+                const isActive = id === currentTable ? 'active' : '';
+                zone.innerHTML += `
+                    <div class="table-btn ${isActive}" id="t-${id}" onclick="switchTable('${id}')">
+                        <span id="label-${id}">${tableNames[id]}</span>
+                        <span class="time-badge" id="badge-${id}">--:--</span>
+                    </div>
+                `;
+            });
+            document.getElementById('add-table-trigger').disabled = tables.length >= 20;
+        }
+
+        function addNewTable() {
+            if (tables.length >= 20) return;
+            const newId = 'X' + (tables.length + 1);
+            const newName = `追加席${tables.length - 7}`;
+            tables.push(newId);
+            tableNames[newId] = newName;
+            initTableData(newId);
+            renderTableSelector();
+            switchTable(newId);
+        }
+
+        function renameCurrentTable() {
+            const oldName = tableNames[currentTable];
+            const newName = prompt(`「${oldName}」の新名称を入力してください:`, oldName);
+            if (newName && newName.trim() !== "") {
+                tableNames[currentTable] = newName.trim();
+                document.getElementById(`label-${currentTable}`).innerText = newName.trim();
+                document.getElementById('current-table-title').innerText = newName.trim();
+            }
+        }
+
+        function openMemoModal() {
+            const table = tableData[currentTable];
+            const newMemo = prompt(`【${tableNames[currentTable]}】のメモを入力してください:`, table.memo);
+            if (newMemo !== null) {
+                table.memo = newMemo.trim();
+                updateDisplay();
+            }
+        }
+
+        function switchTable(tableId) {
+            currentTable = tableId;
+            document.querySelectorAll('.table-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`t-${tableId}`).classList.add('active');
+            document.getElementById('current-table-title').innerText = tableNames[tableId];
+            updateDisplay();
+        }
+
+        function recordEntryTimeIfNeeded(table) {
+            if (!table.entryTime) {
+                const now = new Date();
+                table.entryTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            }
+        }
+
+        function adjustCustomers(val) {
+            let table = tableData[currentTable];
+            table.customers += val;
+            if (table.customers < 1) table.customers = 1;
+            updateDisplay();
+        }
+
+        function setCustomerType(type) {
+            tableData[currentTable].type = type;
+            updateDisplay();
+        }
+
+        function addItem(name, price) {
+            let table = tableData[currentTable];
+            recordEntryTimeIfNeeded(table);
+            if (table.cart[name]) {
+                table.cart[name].qty++;
+            } else {
+                table.cart[name] = { price: price, qty: 1 };
+            }
+            updateDisplay();
+        }
+
+        function changeQty(name, delta) {
+            let table = tableData[currentTable];
+            if (!table.cart[name]) return;
+            table.cart[name].qty += delta;
+            if (table.cart[name].qty <= 0) {
+                delete table.cart[name];
+            }
+            updateDisplay();
+        }
+
+        function toggleDarts() {
+            let table = tableData[currentTable];
+            recordEntryTimeIfNeeded(table);
+
+            if (!table.dartsStartTime) {
+                table.dartsStartTime = new Date().getTime();
+                table.dartsFixedPrice = 0;
+            } else {
+                if (confirm('ダーツ投げ放題を終了し、現在の利用時間で料金を確定しますか？')) {
+                    const now = new Date().getTime();
+                    const elapsedMins = Math.floor((now - table.dartsStartTime) / (1000 * 60));
+
+                    let pricePerPerson = 500;
+                    if (elapsedMins >= 60 && elapsedMins < 120) pricePerPerson = 1000;
+                    else if (elapsedMins >= 120) pricePerPerson = 1500;
+
+                    table.dartsFixedPrice = pricePerPerson * table.customers;
+                    table.dartsStartTime = null;
+                    alert(`ダーツ料金を確定しました：\n1人あたり ${pricePerPerson}円 × ${table.customers}人 ＝ ${table.dartsFixedPrice.toLocaleString()}円`);
+                }
+            }
+            updateDisplay();
+        }
+
+        function clearCurrentTable() {
+            if (confirm(`「${tableNames[currentTable]}」のデータをリセットしてクリアしますか？`)) {
+                initTableData(currentTable);
+                updateDisplay();
+            }
+        }
+
+        // 料金計算共通ロジック
+        function calculateBill(table) {
+            let subtotal = 0;
+            for (let name in table.cart) {
+                subtotal += table.cart[name].price * table.cart[name].qty;
+            }
+
+            let isOperating = Object.keys(table.cart).length > 0 || table.dartsStartTime || table.entryTime || table.dartsFixedPrice > 0;
+            if (!isOperating) return { subtotal: 0, total: 0, darts: 0, charge: 0, diff: 0 };
+
+            // チャージ（500円 × 人数）
+            let chargePrice = table.customers * 500;
+            subtotal += chargePrice;
+
+            // ダーツ料金
+            let dartsPrice = 0;
+            if (table.dartsStartTime) {
+                const now = new Date().getTime();
+                const elapsedMins = Math.floor((now - table.dartsStartTime) / (1000 * 60));
+                let pricePerPerson = 500;
+                if (elapsedMins >= 60 && elapsedMins < 120) pricePerPerson = 1000;
+                else if (elapsedMins >= 120) pricePerPerson = 1500;
+
+                dartsPrice = pricePerPerson * table.customers;
+            } else if (table.dartsFixedPrice > 0) {
+                dartsPrice = table.dartsFixedPrice;
+            }
+            subtotal += dartsPrice;
+
+            let finalTotal = Math.ceil((subtotal * 1.1) / 10) * 10;
+
+            // 【新規追加】お会計(繰上税込) - 税抜小計 の差額
+            let diffPrice = finalTotal - subtotal;
+
+            return { subtotal, total: finalTotal, darts: dartsPrice, charge: chargePrice, diff: diffPrice };
+        }
+
+        function updateDisplay() {
+            const table = tableData[currentTable];
+
+            document.getElementById('ctrl-customers').innerText = table.customers;
+
+            document.getElementById('type-new').classList.remove('active');
+            document.getElementById('type-repeat').classList.remove('active');
+            if (table.type === '新規') document.getElementById('type-new').classList.add('active');
+            else document.getElementById('type-repeat').classList.add('active');
+
+            const dartsBtn = document.getElementById('darts-toggle-btn');
+            if (table.dartsStartTime) {
+                const dTime = new Date(table.dartsStartTime);
+                dartsBtn.innerText = `🎯 ダーツ計測中 (${String(dTime.getHours()).padStart(2, '0')}:${String(dTime.getMinutes()).padStart(2, '0')}~)`;
+                dartsBtn.classList.add('running');
+            } else if (table.dartsFixedPrice > 0) {
+                dartsBtn.innerText = `🎯 ダーツ終了済 (¥${table.dartsFixedPrice.toLocaleString()})`;
+                dartsBtn.classList.remove('running');
+            } else {
+                dartsBtn.innerText = `🎯 ダーツ投げ放題 開始`;
+                dartsBtn.classList.remove('running');
+            }
+
+            const itemsDiv = document.getElementById('slip-items');
+            itemsDiv.innerHTML = '';
+
+            for (let name in table.cart) {
+                const item = table.cart[name];
+                itemsDiv.innerHTML += `
+                    <div class="slip-item">
+                        <div>
+                            <div style="font-weight:bold;">${name}</div>
+                            <div class="qty-adjuster">
+                                <button class="qty-adj-btn minus" onclick="changeQty('${name}', -1)">−</button>
+                                <span class="qty-text">${item.qty}</span>
+                                <button class="qty-adj-btn plus" onclick="changeQty('${name}', 1)">+</button>
+                            </div>
+                        </div>
+                        <span style="font-weight:bold;">${(item.price * item.qty).toLocaleString()}円</span>
+                    </div>
+                `;
+            }
+
+            const metaDiv = document.getElementById('current-darts-time').parentNode;
+            metaDiv.innerHTML = `
+                <div id="current-entry-time">入店: ${table.entryTime || '--:--'}</div>
+                <div id="current-darts-time" style="color: #bf5af2;">ダーツ: ${table.dartsStartTime ? String(new Date(table.dartsStartTime).getHours()).padStart(2, '0') + ':' + String(new Date(table.dartsStartTime).getMinutes()).padStart(2, '0') + '〜' : (table.dartsFixedPrice > 0 ? '終了・金額確定' : '未開始')}</div>
+                <div style="margin-top:4px;">
+                    <button class="rename-btn" style="background:#007aff; color:white; margin:0;" onclick="openMemoModal()">📝 メモ</button>
+                    <span style="font-size:10px; color:#aeaeb2; margin-left:4px;" id="memo-preview">${table.memo ? '①' : 'なし'}</span>
+                </div>
+            `;
+
+            if (Object.keys(table.cart).length === 0 && !table.dartsStartTime && table.dartsFixedPrice === 0) {
+                itemsDiv.innerHTML = '<p style="color:#636366;font-size:13px;margin:0;">注文はありません</p>';
+            }
+            if (table.memo) {
+                itemsDiv.innerHTML += `<div style="font-size:11px; color:#ff9500; margin-top:8px; background:#2c2c2e; padding:6px; border-radius:4px;">メモ: ${table.memo}</div>`;
+            }
+
+            const sysZone = document.getElementById('system-rows-zone');
+            sysZone.innerHTML = '';
+
+            let bills = calculateBill(table);
+            let isOperating = Object.keys(table.cart).length > 0 || table.dartsStartTime || table.entryTime || table.dartsFixedPrice > 0;
+
+            if (isOperating) {
+                sysZone.innerHTML += `
+                    <div class="slip-item" style="color: #a3ffb4; font-size:13px;">
+                        <div>🎫 チャージ料 (500円 × ${table.customers}人)</div>
+                        <span>${bills.charge.toLocaleString()}円</span>
+                    </div>
+                `;
+                if (table.dartsStartTime || table.dartsFixedPrice > 0) {
+                    let txt = "確定済";
+                    if (table.dartsStartTime) {
+                        const now = new Date().getTime();
+                        const elapsedMins = Math.floor((now - table.dartsStartTime) / (1000 * 60));
+                        txt = elapsedMins + "分経過";
+                    }
+                    sysZone.innerHTML += `
+                        <div class="slip-item" style="color: #bf5af2; font-size:13px;">
+                            <div>🎯 ダーツ料金 [${txt}] (${table.customers}人分)</div>
+                            <span>${bills.darts.toLocaleString()}円</span>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('subtotal').innerText = bills.subtotal.toLocaleString() + '円';
+            document.getElementById('total').innerText = bills.total.toLocaleString() + '円';
+
+            // 【新規追加】画面の下部エリア等に差額を表示させたい場合、もしHTML側に該当ID（#pay-diff）がなければ動的に「小計」の直後にねじ込みます
+            let diffElement = document.getElementById('pay-diff');
+            if (!diffElement) {
+                // HTML構造を壊さないよう、合計金額の行の上付近に表示スペースを生成
+                const totalRow = document.getElementById('total').parentNode;
+                const diffRow = document.createElement('div');
+                diffRow.className = 'summary-row';
+                diffRow.style = 'font-size: 13px; color: #ff9500; margin-bottom: 4px;';
+                diffRow.innerHTML = `<span>控除・税等 (会計-小計)</span><span id="pay-diff">0円</span>`;
+                totalRow.parentNode.insertBefore(diffRow, totalRow);
+                diffElement = document.getElementById('pay-diff');
+            }
+            diffElement.innerText = bills.diff.toLocaleString() + '円';
+
+            tables.forEach(id => {
+                const btn = document.getElementById(`t-${id}`);
+                const badge = document.getElementById(`badge-${id}`);
+                const tData = tableData[id];
+                if (Object.keys(tData.cart).length > 0 || tData.dartsStartTime || tData.entryTime || tData.dartsFixedPrice > 0) {
+                    btn.classList.add('has-items');
+                    btn.style.borderColor = tData.dartsStartTime ? '#bf5af2' : '#3a3a3c';
+                    badge.innerText = tData.entryTime || '--:--';
+                } else {
+                    btn.classList.remove('has-items');
+                    btn.style.borderColor = '#3a3a3c';
+                    badge.innerText = '--:--';
+                }
+            });
+        }
+
+        function openPaymentModal() {
+            const table = tableData[currentTable];
+            let bills = calculateBill(table);
+            if (bills.total === 0) {
+                alert('会計する料金がありません。');
+                return;
+            }
+            currentProcessingAmount = bills.total;
+            currentUsedMedalsInThisSession = 0;
+
+            document.getElementById('modal-pay-amount').innerText = currentProcessingAmount.toLocaleString() + '円';
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        function executePayment(method) {
+            const table = tableData[currentTable];
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            let bills = calculateBill(table);
+
+            let itemsSummary = [];
+            itemsSummary.push(`チャージ: ${bills.charge.toLocaleString()}円 (${table.customers}人)`);
+            if (bills.darts > 0) {
+                itemsSummary.push(`ダーツ: ${bills.darts.toLocaleString()}円`);
+            }
+            for (let name in table.cart) {
+                itemsSummary.push(`${name} × ${table.cart[name].qty}`);
+            }
+            if (table.memo) {
+                itemsSummary.push(`[メモ] ${table.memo}`);
+            }
+            // 明細に差額分（外税＋端数）の情報も念のため載せる
+            itemsSummary.push(`(内、税等差額: ${bills.diff.toLocaleString()}円)`);
+
+            if (method === 'メダル') {
+                let medalStr = prompt(`メダルは何枚使用しますか？\n（1枚 ➔ 500円として計算。現在の残額: ${currentProcessingAmount.toLocaleString()}円）`, "1");
+                if (medalStr === null) return;
+
+                let medals = parseInt(medalStr, 10);
+                if (isNaN(medals) || medals <= 0) {
+                    alert("正しい枚数を入力してください。");
+                    return;
+                }
+
+                let medalValue = medals * 500;
+
+                if (medalValue >= currentProcessingAmount) {
+                    let finalMedalValue = currentProcessingAmount;
+                    salesHistory.push({
+                        time: timeStr,
+                        tableName: tableNames[currentTable],
+                        customerType: table.type,
+                        method: 'メダル',
+                        amount: finalMedalValue,
+                        details: itemsSummary
+                    });
+
+                    alert(`【${tableNames[currentTable]}】\nメダル ${medals}枚 (${medalValue}円分) にて会計を完了しました。`);
+                    finishTablePayment();
+                } else {
+                    salesHistory.push({
+                        time: timeStr,
+                        tableName: tableNames[currentTable],
+                        customerType: table.type,
+                        method: 'メダル',
+                        amount: medalValue,
+                        details: itemsSummary
+                    });
+
+                    currentProcessingAmount -= medalValue;
+                    alert(`メダル ${medals}枚 (${medalValue}円分) を適用しました。\n不足分 ${currentProcessingAmount.toLocaleString()}円 の支払い方法を続けて選択してください。`);
+                    document.getElementById('modal-pay-amount').innerText = currentProcessingAmount.toLocaleString() + '円';
+                }
+            } else {
+                salesHistory.push({
+                    time: timeStr,
+                    tableName: tableNames[currentTable],
+                    customerType: table.type,
+                    method: method,
+                    amount: currentProcessingAmount,
+                    details: itemsSummary
+                });
+
+                alert(`【${tableNames[currentTable]}】\n${currentProcessingAmount.toLocaleString()}円を「${method}」で会計しました。`);
+                finishTablePayment();
+            }
+        }
+
+        function finishTablePayment() {
+            initTableData(currentTable);
+            closePaymentModal();
+            updateDisplay();
+            renderReport();
+        }
+
+        function renderReport() {
+            let cash = 0, card = 0, paypay = 0, medal = 0;
+            const logZone = document.getElementById('payment-history-log');
+            logZone.innerHTML = '';
+
+            if (salesHistory.length === 0) {
+                logZone.innerHTML = '<div style="color:#636366; text-align:center; padding:10px;">本日の会計履歴はまだありません</div>';
+            } else {
+                [...salesHistory].reverse().forEach(log => {
+                    if (log.method === '現金') cash += log.amount;
+                    if (log.method === 'クレジット') card += log.amount;
+                    if (log.method === 'PayPay') paypay += log.amount;
+                    if (log.method === 'メダル') medal += log.amount;
+
+                    let detailHtml = log.details && log.details.length > 0
+                        ? `<div class="history-details" style="font-size:11px; color:#aeaeb2; padding-left:12px; margin-top:2px; border-left:2px solid #3a3a3c;">${log.details.join(' / ')}</div>`
+                        : '';
+
+                    logZone.innerHTML += `
+                        <div class="history-row" style="padding: 8px 0; border-bottom: 1px solid #1c1c1e;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span class="time">[${log.time}] ${log.tableName}(${log.customerType})</span>
+                                <span>${log.method} ➔ <span class="amt" style="font-weight:bold; color:#30d158;">${log.amount.toLocaleString()}円</span></span>
+                            </div>
+                            ${detailHtml}
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('sum-cash').innerText = cash.toLocaleString() + '円';
+            document.getElementById('sum-card').innerText = card.toLocaleString() + '円';
+            document.getElementById('sum-paypay').innerText = paypay.toLocaleString() + '円';
+            document.getElementById('sum-medal').innerText = medal.toLocaleString() + '円';
+        }
+
+        function toggleReportView() {
+            const content = document.getElementById('report-content-area');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+                renderReport();
+            }
+        }
+
+        function toggleEditModePanel() {
+            const panel = document.getElementById('menu-edit-panel');
+            const btn = document.getElementById('edit-mode-toggle-btn');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                btn.style.background = '#007aff';
+                btn.innerText = '🛠️ メニュー個別編集';
+            } else {
+                panel.style.display = 'block';
+                btn.style.background = '#ff453a';
+                btn.innerText = '🔒 編集を終了する';
+            }
+        }
+
+        function editCategoryFlow() {
+            let mode = prompt("行う操作の番号を入力してください：\n1: カテゴリを追加する\n2: カテゴリの名前を変える\n3: カテゴリを丸ごと削除する");
+            if (mode === "1") {
+                let newCat = prompt("新しく追加するカテゴリ名を入力してください：");
+                if (newCat && newCat.trim() !== "") {
+                    masterMenu.push({ category: newCat.trim(), items: [] });
+                    alert(`カテゴリ「${newCat}」を追加しました。`);
+                }
+            } else if (mode === "2") {
+                let options = masterMenu.map((c, i) => `${i}: ${c.category}`).join("\n");
+                let idx = prompt("名前を変えたいカテゴリの番号を入れてください：\n" + options);
+                if (idx !== null && masterMenu[idx]) {
+                    let oldName = masterMenu[idx].category;
+                    let newName = prompt(`「${oldName}」の新しい名前を入力：`, oldName);
+                    if (newName && newName.trim() !== "") {
+                        masterMenu[idx].category = newName.trim();
+                        alert("変更しました。");
+                    }
+                }
+            } else if (mode === "3") {
+                let options = masterMenu.map((c, i) => `${i}: ${c.category}`).join("\n");
+                let idx = prompt("【注意】削除したいカテゴリの番号を入れてください（中身も消えます）：\n" + options);
+                if (idx !== null && masterMenu[idx]) {
+                    if (confirm(`本当にカテゴリ「${masterMenu[idx].category}」を削除してよろしいですか？`)) {
+                        masterMenu.splice(idx, 1);
+                        currentCategoryIndex = null;
+                        alert("削除しました。");
+                    }
+                }
+            }
+            backToCategoryTop();
+        }
+
+        function editItemFlow() {
+            let options = masterMenu.map((c, i) => `${i}: ${c.category}`).join("\n");
+            let cIdx = prompt("操作したい商品が含まれる（または追加したい）カテゴリ番号を選んでください：\n" + options);
+            if (cIdx === null || !masterMenu[cIdx]) return;
+
+            let cat = masterMenu[cIdx];
+            let mode = prompt(`【${cat.category}】に対する操作を選んでください：\n1: このカテゴリに新商品を追加する\n2: 既存商品の名前や価格を変える・削除する`);
+
+            if (mode === "1") {
+                let name = prompt("追加する新しいメニューの名前：");
+                if (!name || name.trim() === "") return;
+                let priceStr = prompt("そのメニューの税抜価格（数字のみ）：", "680");
+                let price = parseInt(priceStr, 10);
+                if (!isNaN(price)) {
+                    cat.items.push({ name: name.trim(), price: price });
+                    alert(`「${name} (¥${price})」を追加しました！`);
+                } else {
+                    alert("価格が正しく入力されませんでした。");
+                }
+            } else if (mode === "2") {
+                if (cat.items.length === 0) {
+                    alert("このカテゴリにはまだ商品がありません。");
+                    return;
+                }
+                let iOptions = cat.items.map((item, i) => `${i}: ${item.name} (¥${item.price})`).join("\n");
+                let iIdx = prompt("変更または削除したい商品の番号を選んでください：\n" + iOptions);
+                if (iIdx === null || !cat.items[iIdx]) return;
+
+                let targetItem = cat.items[iIdx];
+                let subMode = prompt(`「${targetItem.name}」に対して何を行いますか？\n1: 名前・価格を変更する\n2: この商品を削除する`);
+
+                if (subMode === "1") {
+                    let newName = prompt("新しい名前（そのままならエンター）：", targetItem.name);
+                    let newPriceStr = prompt("新しい税抜価格（数字のみ）：", targetItem.price);
+                    if (newName && newName.trim() !== "") targetItem.name = newName.trim();
+                    let np = parseInt(newPriceStr, 10);
+                    if (!isNaN(np)) targetItem.price = np;
+                    alert("商品の変更を反映しました。");
+                } else if (subMode === "2") {
+                    if (confirm(`本当に「${targetItem.name}」を削除しますか？`)) {
+                        cat.items.splice(iIdx, 1);
+                        alert("削除しました。");
+                    }
+                }
+            }
+            drillDownCategory(cIdx);
+        }
+
+        renderTableSelector();
+        renderMenuSystem();
+        updateDisplay();
+    </script>
+</body>
+<footer>
+    <p>system developer</p>
+    <font size="2">＊seto</font>
+</footer>
+</html>
