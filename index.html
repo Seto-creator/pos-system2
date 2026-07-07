@@ -727,25 +727,26 @@
         // 初期の2階層メニュー構造
         let masterMenu = [
             {
-                category: "ビール・発泡酒",
+                category: "ビール・瓶",
                 items: [
                     { name: "生ビール", price: 680 },
                     { name: "クラフト各種", price: 680 },
                     { name: "コロナ", price: 680 },
                     { name: "ハイネケン", price: 780 },
-                    { name: "シャンディーガフ", price: 680 },
-                    { name: "レッドアイ", price: 680 },
-                    { name: "ディーゼル", price: 680 },
-                    { name: "ドッグノーズ（ジン）", price: 680 },
-                    { name: "グリーンフリー（ノンアル）", price: 680 }
+                    { name: "シャンディーガフ", price: 780 },
+                    { name: "レッドアイ", price: 780 },
+                    { name: "ディーゼル", price: 780 },
+                    { name: "ドッグノーズ（ジン）", price: 780 },
+                    { name: "グリーンフリー（ノンアル）", price: 680 },
+                    { name: "スミノフアイス", price: 680 }
                 ]
             },
             {
                 category: "ウイスキー",
                 items: [
                     { name: "ハイボール", price: 850 },
-                    { name: "ウイスキー 850", price: 850 },
-                    { name: "ウイスキー 1050", price: 1050 },
+                    { name: "ウイスキー ￥850", price: 850 },
+                    { name: "ウイスキー ￥1050", price: 1050 },
                     { name: "ジンジャーハイ", price: 680 },
                     { name: "コークハイ", price: 700 },
                     { name: "ウイスキー その他", price: 850 }
@@ -775,7 +776,7 @@
                 items: [
                     { name: "テキーラ", price: 500 },
                     { name: "クライナー", price: 600 },
-                    { name: "Rテキーラ", price: 400 }
+                    { name: "Rテキーラ", price: 2500 }
                 ]
             },
             {
@@ -898,7 +899,7 @@
                 ]
             },
             {
-                category: "リキュールその他",
+                category: "リキュールその他・ボトル",
                 items: [
                     { name: "チャイナブルー", price: 780 },
                     { name: "ディタモーニ", price: 780 },
@@ -912,7 +913,15 @@
                     { name: "CAMPARI （ソーダ）", price: 780 },
                     { name: "CAMPARI （オレンジ）", price: 780 },
                     { name: "CAMPARI スプモーニ（グレフル、トニック）", price: 780 },
-                    { name: "オリジナルカクテル", price: 880 }
+                    { name: "オリジナルカクテル", price: 880 },
+                    { name: "ポンパドール", price: 6000 },
+                    { name: "モエ・エ・シャンドン・ブリュ", price: 12000 },
+                    { name: "モエ・エ・シャンドン・ロぜ", price: 15000 },
+                    { name: "モエ・エ・シャンドン・アイス", price: 25000 },
+                    { name: "モエ・エ・シャンドン・ネクター", price: 25000 },
+                    { name: "焼酎JAPAN", price: 2700 },
+                    { name: "ポット", price: 900 },
+                    { name: "アイス（氷）", price: 200 }
                 ]
             },
             {
@@ -933,8 +942,20 @@
                     { name: "梅昆布茶", price: 580 },
                     { name: "レッドブル", price: 650 }
                 ]
+            },
+            {
+                category: "ボトル🥂",
+                items: [
+                    { name: "ポンパドール", price: 6000 },
+                    { name: "モエ・エ・シャンドン・ブリュ", price: 12000 },
+                    { name: "モエ・エ・シャンドン・ロぜ", price: 15000 },
+                    { name: "モエ・エ・シャンドン・アイス", price: 25000 },
+                    { name: "モエ・エ・シャンドン・ネクター", price: 25000 },
+                    { name: "焼酎JAPAN", price: 2700 },
+                    { name: "ポット", price: 900 },
+                    { name: "アイス（氷）", price: 200 }
+                ]
             }
-
         ];
 
         let currentCategoryIndex = null;
